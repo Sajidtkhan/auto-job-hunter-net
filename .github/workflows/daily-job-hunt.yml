@@ -25,6 +25,8 @@ jobs:
         run: dotnet restore
 
       - name: Run Automated Job Scan & Apply
+        env:
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         run: |
           echo "Executing automated job search & apply for Dubai, Germany & Saudi Arabia..."
           dotnet run -- --scan-and-apply

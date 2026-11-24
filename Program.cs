@@ -28,6 +28,13 @@ if (File.Exists(configJsonPath))
     catch { }
 }
 
+// Allow overriding SMTP Password via Environment Variable (e.g. GitHub Actions secret or Cloud Host)
+var envSmtpPass = Environment.GetEnvironmentVariable("SMTP_PASSWORD");
+if (!string.IsNullOrWhiteSpace(envSmtpPass))
+{
+    appConfig.Smtp.Password = envSmtpPass;
+}
+
 var userProfile = new UserProfile();
 if (File.Exists(profileJsonPath))
 {
