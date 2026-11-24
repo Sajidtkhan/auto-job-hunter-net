@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoJobHunter.NET - Dubai & Germany .NET/SQL Auto-Applier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="logo-icon">⚡</div>
+        <div class="brand-text">
+          <h1>AutoJobHunter<span>.NET</span></h1>
+          <p class="subtitle">Daily Automated .NET & SQL Job Apply Agent (Dubai & Germany)</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="engine-badge">
+          <span class="status-pulse"></span>
+          <span>Daily Scheduler Active (09:00 AM)</span>
+        </div>
+        <button id="btnScanNow" class="btn btn-primary" onclick="triggerScan(false)">
+          <span class="icon">🔍</span> Scan Jobs Now
+        </button>
+        <button id="btnScanApplyNow" class="btn btn-success" onclick="triggerScan(true)">
+          <span class="icon">🚀</span> Scan & Auto-Apply
+        </button>
+        <button id="btnApplyAll" class="btn btn-warning" onclick="applyToAllMatches()" style="background:#f59e0b; color:white;">
+          <span class="icon">⚡</span> Apply to All Matches
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs-wrapper">
+    <div class="tabs-container">
+      <button class="nav-tab active" onclick="switchTab('jobs')">
+        💼 Job Matches <span id="tabJobCount" class="tab-pill">0</span>
+      </button>
+      <button class="nav-tab" onclick="switchTab('profile')">
+        👤 Candidate Profile
+      </button>
+      <button class="nav-tab" onclick="switchTab('settings')">
+        ⚙️ Settings & Automation
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    <!-- Notification Banner -->
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- TAB 1: JOBS DASHBOARD -->
+    <section id="tab-jobs" class="tab-content active">
+      <!-- Stats Overview -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon dubai-icon">🇦🇪</div>
+          <div class="stat-info">
+            <span class="stat-label">Dubai / UAE Jobs</span>
+            <span id="statDubai" class="stat-value">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon germany-icon">🇩🇪</div>
+          <div class="stat-info">
+            <span class="stat-label">Germany Jobs</span>
+            <span id="statGermany" class="stat-value">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon high-match-icon">🎯</div>
+          <div class="stat-info">
+            <span class="stat-label">High Matches (≥70%)</span>
+            <span id="statHighMatch" class="stat-value">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon applied-icon">📨</div>
+          <div class="stat-info">
+            <span class="stat-label">Applied Jobs</span>
+            <span id="statApplied" class="stat-value">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters Bar -->
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label>Location:</label>
+          <div class="btn-group">
+            <button class="filter-btn active" onclick="filterCountry('')">All</button>
+            <button class="filter-btn" onclick="filterCountry('dubai')">Dubai 🇦🇪</button>
+            <button class="filter-btn" onclick="filterCountry('germany')">Germany 🇩🇪</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>Status:</label>
+          <select id="selectStatus" onchange="applyFilters()">
+            <option value="">All Statuses</option>
+            <option value="Discovered">Discovered</option>
+            <option value="Applied">Applied</option>
+            <option value="Interview">Interview</option>
+            <option value="Skipped">Skipped</option>
+          </select>
+        </div>
+        <div class="filter-group search-group">
+          <input type="text" id="searchInput" placeholder="Search title, company, skills..." oninput="applyFilters()">
+        </div>
+      </div>
+
+      <!-- Jobs Table -->
+      <div class="table-container">
+        <table class="jobs-table">
+          <thead>
+            <tr>
+              <th width="100">Match</th>
+              <th>Role & Company</th>
+              <th>Location</th>
+              <th>Source</th>
+              <th>Matched Tech</th>
+              <th>Status</th>
+              <th width="200">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="jobsTableBody">
+            <tr>
+              <td colspan="7" class="loading-cell">Loading job opportunities...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 2: CANDIDATE PROFILE -->
+    <section id="tab-profile" class="tab-content">
+      <div class="card form-card">
+        <div class="card-header">
+          <h2>Candidate Information & Technical Profile</h2>
+          <p>Pre-configured with your senior .NET Core & SQL Server engineering credentials.</p>
+        </div>
+        <div class="card-body">
+          <form id="profileForm" onsubmit="saveProfile(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="profFullName" required>
+              </div>
+              <div class="form-group">
+                <label>Current Title</label>
+                <input type="text" id="profTitle" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="profEmail" required>
+              </div>
+              <div class="form-group">
+                <label>Phone / WhatsApp</label>
+                <input type="text" id="profPhone" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>LinkedIn Profile URL</label>
+                <input type="url" id="profLinkedIn" required>
+              </div>
+              <div class="form-group">
+                <label>Notice Period / Availability</label>
+                <input type="text" id="profNotice" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Target Locations & Relocation</label>
+              <input type="text" id="profLocations" required>
+            </div>
+            <div class="form-group">
+              <label>Core Skills Summary (Keywords used by matching engine)</label>
+              <textarea id="profSkills" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+              <label>Resume File Path (Attached during automated email apply)</label>
+              <input type="text" id="profResumePath" required>
+              <small class="helper-text">ATS Resume detected in your local scratch directory.</small>
+            </div>
+            <button type="submit" class="btn btn-primary">💾 Save Profile</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: SETTINGS -->
+    <section id="tab-settings" class="tab-content">
+      <div class="card form-card">
+        <div class="card-header">
+          <h2>Daily Automation & Notification Settings</h2>
+          <p>Configure automated scheduled run time, email application credentials, and Telegram alerts.</p>
+        </div>
+        <div class="card-body">
+          <form id="configForm" onsubmit="saveConfig(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Daily Scheduled Run Hour (24h format)</label>
+                <input type="number" id="cfgRunHour" min="0" max="23" value="9" required>
+                <small class="helper-text">e.g. 9 = 9:00 AM every morning automatically.</small>
+              </div>
+              <div class="form-group">
+                <label>Min Match Score to Notify (%)</label>
+                <input type="number" id="cfgMinScore" min="10" max="100" value="60" required>
+              </div>
+            </div>
+
+            <div class="toggle-card">
+              <label class="switch">
+                <input type="checkbox" id="cfgAutoApply">
+                <span class="slider round"></span>
+              </label>
+              <div class="toggle-text">
+                <strong>Auto-Apply via Email</strong>
+                <p>When enabled, automatically emails your resume and tailored cover letter to HR/apply emails found in job postings.</p>
+              </div>
+            </div>
+
+            <h3 class="section-divider" style="color:#ef4444;">🛡️ Excluded Employers (Strict Blacklist)</h3>
+            <p style="font-size:0.85rem; color:#9ca3af; margin-bottom:0.75rem;">
+              Your resume and applications will <strong>NEVER</strong> be sent to these companies or domains.
+            </p>
+            <div class="form-group">
+              <label>Blacklisted Companies & Domains (Comma-separated)</label>
+              <textarea id="cfgBlacklist" rows="3" style="border-color:#ef4444;"></textarea>
+              <small class="helper-text" style="color:#fca5a5;">Protected: Red Orange Technologies, Arethos Ventures, RevClerx, MaxVal, Mindmatrix (All 100% blocked).</small>
+            </div>
+
+            <h3 class="section-divider">Outgoing Email (SMTP) Configuration</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>SMTP Host</label>
+                <input type="text" id="cfgSmtpHost" value="smtp.gmail.com">
+              </div>
+              <div class="form-group">
+                <label>SMTP Port</label>
+                <input type="number" id="cfgSmtpPort" value="587">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Sender Email</label>
+                <input type="email" id="cfgSmtpEmail">
+              </div>
+              <div class="form-group">
+                <label>SMTP App Password</label>
+                <input type="password" id="cfgSmtpPass" placeholder="Leave empty for Simulation Mode">
+                <small class="helper-text">If left empty, application works in Simulation Mode (safe dry-run testing).</small>
+              </div>
+            </div>
+
+            <h3 class="section-divider">Telegram Alerts (Optional)</h3>
+            <div class="toggle-card">
+              <label class="switch">
+                <input type="checkbox" id="cfgTelegramEnabled">
+                <span class="slider round"></span>
+              </label>
+              <div class="toggle-text">
+                <strong>Enable Instant Telegram Alerts</strong>
+                <p>Receive notifications on your phone whenever new .NET & SQL jobs are discovered in Dubai and Germany.</p>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Telegram Bot Token</label>
+                <input type="text" id="cfgTgToken" placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11">
+              </div>
+              <div class="form-group">
+                <label>Telegram Chat ID</label>
+                <input type="text" id="cfgTgChatId" placeholder="e.g. 123456789">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">💾 Save Settings</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cover Letter Modal -->
+  <div id="coverLetterModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalJobTitle">Tailored Application Cover Letter</h3>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-subtitle" id="modalCompanyInfo"></p>
+        <textarea id="modalCoverLetterText" class="letter-textarea" rows="14"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="copyLetterToClipboard()">📋 Copy to Clipboard</button>
+        <button id="btnModalApply" class="btn btn-primary" onclick="applyFromModal()">🚀 Dispatch Application</button>
+        <button class="btn btn-outline" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+name: Daily .NET & SQL Job Auto-Apply (Dubai & Germany)
+
+on:
+  schedule:
+    # Runs at 03:30 UTC every day (9:00 AM IST)
+    - cron: '30 3 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI anytime
+
+jobs:
+  job-hunter:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 9 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build Application
+      run: dotnet build --no-restore -c Release
+
+    - name: Execute Daily Job Scan & Auto-Apply
+      run: |
+        # Run background server
+        dotnet run --no-build -c Release --urls "http://localhost:5000" &
+        SERVER_PID=$!
+        sleep 5
+        
+        # Trigger live scan and apply
+        curl -X POST "http://localhost:5000/api/jobs/scan?autoApply=true"
+        curl -X POST "http://localhost:5000/api/jobs/apply-all"
+        
+        # Fetch stats
+        curl -s "http://localhost:5000/api/stats"
+        
+        # Kill server gracefully
+        kill $SERVER_PID
+
+    - name: Commit & Push Updated Job Database
+      run: |
+        git config --global user.name "AutoJobHunter Bot"
+        git config --global user.email "bot@autojobhunter.net"
+        git add jobs.db
+        git diff-index --quiet HEAD || git commit -m "chore(automation): daily job scan and application update [skip ci]"
+        git push || echo "No changes to push or branch protected"
