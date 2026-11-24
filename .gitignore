@@ -3,5 +3,6 @@ obj/
 *.user
 *.suo
 .vs/
-.idea/
-*.log
+*.db-shm
+*.db-wal
+cloudflared.exe

@@ -236,7 +236,7 @@ async function loadProfile() {
     document.getElementById('profTitle').value = p.currentTitle || '';
     document.getElementById('profEmail').value = p.email || '';
     document.getElementById('profPhone').value = p.phone || '';
-    document.getElementById('profLinkedIn').value = p.linkedinUrl || '';
+    document.getElementById('profLinkedIn').value = p.linkedInUrl || p.linkedinUrl || p.LinkedInUrl || 'https://in.linkedin.com/in/sajid-tavrej-khan-b1b0b6188';
     document.getElementById('profNotice').value = p.noticePeriod || '';
     document.getElementById('profLocations').value = p.targetLocations || '';
     document.getElementById('profSkills').value = p.skillsSummary || '';
@@ -253,7 +253,9 @@ async function saveProfile(e) {
     currentTitle: document.getElementById('profTitle').value,
     email: document.getElementById('profEmail').value,
     phone: document.getElementById('profPhone').value,
+    linkedInUrl: document.getElementById('profLinkedIn').value,
     linkedinUrl: document.getElementById('profLinkedIn').value,
+    LinkedInUrl: document.getElementById('profLinkedIn').value,
     noticePeriod: document.getElementById('profNotice').value,
     targetLocations: document.getElementById('profLocations').value,
     skillsSummary: document.getElementById('profSkills').value,
@@ -267,7 +269,8 @@ async function saveProfile(e) {
       body: JSON.stringify(profile)
     });
     if (res.ok) {
-      showAlert('💾 Profile successfully updated! Cover letters will use your new details.', 'success');
+      await loadProfile();
+      showAlert('💾 Profile & Skills successfully saved to permanent storage! All cover letters & applications updated.', 'success');
     }
   } catch (err) {
     showAlert('Failed to save profile.', 'error');

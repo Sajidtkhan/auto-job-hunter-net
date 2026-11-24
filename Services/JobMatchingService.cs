@@ -17,7 +17,7 @@ public class JobMatchingService
 
     private static readonly string[] BackendKeywords = new[]
     {
-        "backend", "microservices", "web api", "rest api", "clean architecture", "cqrs", "redis", "docker"
+        "microservices", "web api", "rest api", "clean architecture", "mvc", "jquery"
     };
 
     private static readonly string[] GermanyLocations = new[]
@@ -27,7 +27,7 @@ public class JobMatchingService
 
     private static readonly string[] DubaiLocations = new[]
     {
-        "dubai", "uae", "united arab emirates", "abu dhabi", "sharjah"
+        "dubai", "uae", "united arab emirates", "abu dhabi", "sharjah", "saudi", "saudi arabia", "riyadh", "jeddah", "ksa"
     };
 
     public (int score, string matched, string country, string? email) EvaluateJob(string title, string company, string location, string description)

@@ -1,13 +1,9 @@
 services:
   - type: web
-    name: autojobhunter-net
-    env: docker
+    name: auto-job-hunter-net
+    runtime: docker
     plan: free
     region: frankfurt
-    branch: main
-    autoDeploy: true
     envVars:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Production
-      - key: ASPNETCORE_URLS
-        value: http://+:5000
+      - key: PORT
+        value: 10000

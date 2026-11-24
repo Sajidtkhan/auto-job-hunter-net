@@ -55,10 +55,17 @@ public class EmailApplicationService
                 TextBody = coverLetter
             };
 
-            // Attach resume if file exists
-            if (File.Exists(profile.ResumePath))
+            // Attach resume if file exists (with wwwroot fallback)
+            string resumeToAttach = profile.ResumePath;
+            if (string.IsNullOrWhiteSpace(resumeToAttach) || !File.Exists(resumeToAttach))
             {
-                builder.Attachments.Add(profile.ResumePath);
+                var fallback = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "resume.pdf");
+                if (File.Exists(fallback)) resumeToAttach = fallback;
+            }
+
+            if (!string.IsNullOrWhiteSpace(resumeToAttach) && File.Exists(resumeToAttach))
+            {
+                builder.Attachments.Add(resumeToAttach);
             }
 
             message.Body = builder.ToMessageBody();

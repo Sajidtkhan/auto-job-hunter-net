@@ -172,7 +172,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label>LinkedIn Profile URL</label>
-                <input type="url" id="profLinkedIn" required>
+                <input type="text" id="profLinkedIn" placeholder="https://in.linkedin.com/in/sajid-tavrej-khan-b1b0b6188" required>
               </div>
               <div class="form-group">
                 <label>Notice Period / Availability</label>
@@ -189,8 +189,13 @@
             </div>
             <div class="form-group">
               <label>Resume File Path (Attached during automated email apply)</label>
-              <input type="text" id="profResumePath" required>
-              <small class="helper-text">ATS Resume detected in your local scratch directory.</small>
+              <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem;">
+                <input type="text" id="profResumePath" style="flex: 1;" required>
+                <a href="/resume.pdf" target="_blank" class="btn btn-secondary" style="white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem;">
+                  📄 View Resume PDF
+                </a>
+              </div>
+              <small class="helper-text" style="color:#10b981;">✓ Authentic Single-Page ATS Resume Active: Sajid_Tavrej_Khan_Resume.pdf (RevClerx AI Solutions on top)</small>
             </div>
             <button type="submit" class="btn btn-primary">💾 Save Profile</button>
           </form>

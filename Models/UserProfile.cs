@@ -10,7 +10,7 @@ public class UserProfile
     public int YearsOfExperience { get; set; } = 6;
     public string NoticePeriod { get; set; } = "30 Days (Immediate Available)";
     public bool WillingToRelocate { get; set; } = true;
-    public string TargetLocations { get; set; } = "Dubai, UAE; Germany (Berlin, Munich, Frankfurt, Hamburg); Remote";
-    public string SkillsSummary { get; set; } = "C#, .NET 8 / .NET Core, ASP.NET Core Web API, Entity Framework Core, Dapper, MS SQL Server, Redis, Clean Architecture, Microservices, CQRS with MediatR, T-SQL, Docker, CI/CD, Azure";
-    public string ResumePath { get; set; } = @"C:\Users\Sajid Khan\.gemini\antigravity\scratch\sajid_khan_resume\Sajid_Khan_Resume_2Page.html";
+    public string TargetLocations { get; set; } = "Dubai & Abu Dhabi (UAE); Riyadh & Jeddah (Saudi Arabia); Berlin, Munich & Frankfurt (Germany); Remote";
+    public string SkillsSummary { get; set; } = "C#, .NET 8 / .NET Core, ASP.NET Core Web API, Entity Framework Core, Dapper, MS SQL Server, Clean Architecture, Microservices, Rest API, jQuery, MVC";
+    public string ResumePath { get; set; } = @"C:\Users\Sajid Khan\Downloads\Sajid_Tavrej_Khan_Resume.pdf";
 }

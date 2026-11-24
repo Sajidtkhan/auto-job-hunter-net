@@ -4,12 +4,12 @@ public class AppConfig
 {
     public List<string> TargetKeywords { get; set; } = new() 
     { 
-        ".NET", "C#", "ASP.NET", "ASP.NET Core", "SQL", "SQL Server", "EF Core", "Entity Framework", "Backend Developer", "Microservices" 
+        "C#", ".NET 8", ".NET Core", "ASP.NET Core", "ASP.NET Core Web API", "Entity Framework Core", "EF Core", "Dapper", "MS SQL Server", "SQL Server", "Clean Architecture", "Microservices", "Rest API", "jQuery", "MVC" 
     };
 
     public List<string> TargetCountries { get; set; } = new() 
     { 
-        "Germany", "Dubai", "United Arab Emirates", "UAE" 
+        "Germany", "Dubai", "United Arab Emirates", "UAE", "Saudi Arabia", "KSA", "Riyadh" 
     };
 
     public List<string> BlacklistedCompanies { get; set; } = new()

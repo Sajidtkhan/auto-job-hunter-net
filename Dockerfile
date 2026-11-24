@@ -7,7 +7,7 @@ RUN dotnet publish "JobAutoApplyNET.csproj" -c Release -o /app/publish /p:UseApp
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
-EXPOSE 5000
-ENV ASPNETCORE_URLS=http://+:5000
 COPY --from=build /app/publish .
+ENV PORT=5000
+EXPOSE 5000
 ENTRYPOINT ["dotnet", "JobAutoApplyNET.dll"]

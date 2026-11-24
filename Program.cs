@@ -5,17 +5,44 @@ using JobAutoApplyNET.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Explicitly bind to port 5000 across all interfaces (localhost, 127.0.0.1, LAN)
-builder.WebHost.UseUrls("http://*:5000");
+// Explicitly bind to assigned port (local 5000 or Cloud Provider PORT environment variable)
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+builder.WebHost.UseUrls($"http://*:{port}");
 
 // Configure SQLite Database
 var dbPath = Path.Combine(builder.Environment.ContentRootPath, "jobs.db");
 builder.Services.AddDbContext<JobDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
 
-// Register AppConfig and UserProfile as singletons for dynamic runtime updates
+// Register AppConfig and UserProfile as persistent singletons with disk backing
+var profileJsonPath = Path.Combine(builder.Environment.ContentRootPath, "profile.json");
+var configJsonPath = Path.Combine(builder.Environment.ContentRootPath, "config.json");
+
 var appConfig = new AppConfig();
+if (File.Exists(configJsonPath))
+{
+    try 
+    { 
+        appConfig = System.Text.Json.JsonSerializer.Deserialize<AppConfig>(File.ReadAllText(configJsonPath)) ?? appConfig; 
+    } 
+    catch { }
+}
+
 var userProfile = new UserProfile();
+if (File.Exists(profileJsonPath))
+{
+    try 
+    { 
+        userProfile = System.Text.Json.JsonSerializer.Deserialize<UserProfile>(File.ReadAllText(profileJsonPath)) ?? userProfile; 
+    } 
+    catch { }
+}
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.PropertyNameCaseInsensitive = true;
+});
+
 builder.Services.AddSingleton(appConfig);
 builder.Services.AddSingleton(userProfile);
 
@@ -51,6 +78,18 @@ using (var scope = app.Services.CreateScope())
         db.JobPostings.RemoveRange(blacklisted);
         db.SaveChanges();
     }
+}
+
+// Support direct CLI / Cloud Runner scan mode (for GitHub Actions or cloud crons)
+if (args.Contains("--scan-now") || args.Contains("--scan-and-apply"))
+{
+    bool autoApply = args.Contains("--scan-and-apply") || appConfig.AutoSendEmailApplication;
+    Console.WriteLine($"[Cloud Runner] Executing automated daily job search for Dubai, Germany & Saudi Arabia (AutoApply: {autoApply})...");
+    using var scope2 = app.Services.CreateScope();
+    var aggregator = scope2.ServiceProvider.GetRequiredService<AggregatorJobService>();
+    var res = await aggregator.ScanAndProcessJobsAsync(appConfig, userProfile, autoApply);
+    Console.WriteLine($"[Cloud Runner] Finished! Found {res.NewMatchesFound} matches (Dubai: {res.DubaiCount}, Germany: {res.GermanyCount}). Auto-applied: {res.AutoAppliedCount}.");
+    return;
 }
 
 app.UseDefaultFiles();
@@ -237,26 +276,33 @@ app.MapPost("/api/jobs/{id:int}/status", async (int id, string newStatus, JobDbC
     return Results.Ok(job);
 });
 
-// 7. Get and Update Profile
+// 7. Get and Update Profile (Disk-persisted)
 app.MapGet("/api/profile", (UserProfile profile) => Results.Ok(profile));
-app.MapPost("/api/profile", (UserProfile updated, UserProfile profile) =>
+app.MapPost("/api/profile", (UserProfile updated, UserProfile profile, IWebHostEnvironment env) =>
 {
-    profile.FullName = updated.FullName;
-    profile.Email = updated.Email;
-    profile.Phone = updated.Phone;
-    profile.LinkedInUrl = updated.LinkedInUrl;
-    profile.CurrentTitle = updated.CurrentTitle;
-    profile.YearsOfExperience = updated.YearsOfExperience;
-    profile.NoticePeriod = updated.NoticePeriod;
-    profile.TargetLocations = updated.TargetLocations;
-    profile.SkillsSummary = updated.SkillsSummary;
-    profile.ResumePath = updated.ResumePath;
+    if (!string.IsNullOrWhiteSpace(updated.FullName)) profile.FullName = updated.FullName;
+    if (!string.IsNullOrWhiteSpace(updated.Email)) profile.Email = updated.Email;
+    if (!string.IsNullOrWhiteSpace(updated.Phone)) profile.Phone = updated.Phone;
+
+    if (!string.IsNullOrWhiteSpace(updated.LinkedInUrl)) profile.LinkedInUrl = updated.LinkedInUrl;
+
+    if (!string.IsNullOrWhiteSpace(updated.CurrentTitle)) profile.CurrentTitle = updated.CurrentTitle;
+    if (updated.YearsOfExperience > 0) profile.YearsOfExperience = updated.YearsOfExperience;
+    if (!string.IsNullOrWhiteSpace(updated.NoticePeriod)) profile.NoticePeriod = updated.NoticePeriod;
+    if (!string.IsNullOrWhiteSpace(updated.TargetLocations)) profile.TargetLocations = updated.TargetLocations;
+    if (!string.IsNullOrWhiteSpace(updated.SkillsSummary)) profile.SkillsSummary = updated.SkillsSummary;
+    if (!string.IsNullOrWhiteSpace(updated.ResumePath)) profile.ResumePath = updated.ResumePath;
+
+    // Persist permanently to disk
+    var path = Path.Combine(env.ContentRootPath, "profile.json");
+    File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(profile, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+
     return Results.Ok(profile);
 });
 
-// 8. Get and Update Config
+// 8. Get and Update Config (Disk-persisted)
 app.MapGet("/api/config", (AppConfig config) => Results.Ok(config));
-app.MapPost("/api/config", (AppConfig updated, AppConfig config) =>
+app.MapPost("/api/config", (AppConfig updated, AppConfig config, IWebHostEnvironment env) =>
 {
     config.DailyRunHour = updated.DailyRunHour;
     config.MinMatchScoreToNotify = updated.MinMatchScoreToNotify;
@@ -267,6 +313,11 @@ app.MapPost("/api/config", (AppConfig updated, AppConfig config) =>
     }
     config.Smtp = updated.Smtp;
     config.Telegram = updated.Telegram;
+
+    // Persist permanently to disk
+    var path = Path.Combine(env.ContentRootPath, "config.json");
+    File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(config, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+
     return Results.Ok(config);
 });
 
