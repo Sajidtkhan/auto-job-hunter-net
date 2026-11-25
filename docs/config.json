@@ -1,22 +1,15 @@
 {
-  "DailyRunHour": 9,
-  "MinMatchScoreToNotify": 60,
-  "AutoSendEmailApplication": true,
-  "BlacklistedCompanies": [
-    "Red Orange Technologies",
-    "Arethos Ventures",
-    "RevClerx",
-    "MaxVal",
-    "Mindmatrix"
-  ],
   "TargetKeywords": [
     "C#",
     ".NET 8",
     ".NET Core",
+    "ASP.NET Core",
     "ASP.NET Core Web API",
     "Entity Framework Core",
+    "EF Core",
     "Dapper",
     "MS SQL Server",
+    "SQL Server",
     "Clean Architecture",
     "Microservices",
     "Rest API",
@@ -28,12 +21,39 @@
     "Dubai",
     "United Arab Emirates",
     "UAE",
-    "Saudi Arabia"
+    "Saudi Arabia",
+    "KSA",
+    "Riyadh"
+  ],
+  "DailyRunHour": 9,
+  "MinMatchScoreToNotify": 60,
+  "AutoSendEmailApplication": true,
+  "BlacklistedCompanies": [
+    "red orange",
+    "red orange technologies",
+    "redorangetechnologies",
+    "redorangetechnologies.com",
+    "arethos",
+    "arethos ventures",
+    "arethos.com",
+    "arerhos",
+    "arerhos ventures",
+    "arerhosventures",
+    "revclerx",
+    "revclerx.com",
+    "maxval",
+    "maxval group",
+    "maxval.com",
+    "mindmatrix",
+    "mindmatrix.net"
   ],
   "Smtp": {
     "Host": "smtp.gmail.com",
     "Port": 587,
-    "SenderEmail": "sajidkhanbarun@gmail.com"
+    "SenderEmail": "sajidkhanbarun@gmail.com",
+    "SenderName": "Sajid Tavrej Khan",
+    "Password": "",
+    "EnableSsl": true
   },
   "Telegram": {
     "Enabled": false,

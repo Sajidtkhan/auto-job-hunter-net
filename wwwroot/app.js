@@ -80,7 +80,7 @@ const DEFAULT_JOBS = [
     "applyEmail": "tech-recruiting@zalando.de",
     "matchScore": 87,
     "matchedKeywords": "C#, .NET 8, ASP.NET Core Web API, Clean Architecture, Entity Framework Core",
-    "status": "Discovered",
+    "status": "Applied",
     "discoveredAt": "2026-11-25T03:30:00Z",
     "appliedAt": null,
     "generatedCoverLetter": "Dear Zalando Engineering Leadership,\n\nI am writing to express my enthusiasm for the Senior Cloud API Engineer (C# / .NET 8) position in Munich. With deep expertise in C#, .NET 8, ASP.NET Core Web API, and Clean Architecture, I specialize in designing scalable backend services that deliver outstanding consumer experiences.\n\nBest regards,\nSajid Tavrej Khan\nsajidkhanbarun@gmail.com"
@@ -114,7 +114,7 @@ const DEFAULT_JOBS = [
     "applyEmail": "digital.recruiting@bmwgroup.com",
     "matchScore": 84,
     "matchedKeywords": "C#, .NET 8, Dapper, MS SQL Server, Clean Architecture",
-    "status": "Discovered",
+    "status": "Applied",
     "discoveredAt": "2026-11-25T03:30:00Z",
     "appliedAt": null,
     "generatedCoverLetter": "Dear BMW Group Talent Team,\n\nI am eager to present my candidacy for the Backend Software Engineer (.NET & Dapper) role in Munich. I have extensive experience building high-throughput microservices using C#, .NET 8, Dapper, and MS SQL Server for low-latency operational data pipelines.\n\nSincerely,\nSajid Tavrej Khan"
@@ -148,7 +148,7 @@ const DEFAULT_JOBS = [
     "applyEmail": "fintech-hiring@n26.com",
     "matchScore": 80,
     "matchedKeywords": "C#, ASP.NET Core Web API, Entity Framework Core, Clean Architecture, Rest API",
-    "status": "Discovered",
+    "status": "Applied",
     "discoveredAt": "2026-11-25T03:30:00Z",
     "appliedAt": null,
     "generatedCoverLetter": "Dear N26 Engineering Team,\n\nI am writing to apply for the ASP.NET Core Web API Engineer position in Frankfurt. My focus on Clean Architecture, C#, ASP.NET Core Web API, and EF Core makes me excited to contribute to N26's European banking services.\n\nWarm regards,\nSajid Tavrej Khan"
@@ -165,7 +165,7 @@ const DEFAULT_JOBS = [
     "applyEmail": "siemens.hiring@siemens.com",
     "matchScore": 78,
     "matchedKeywords": "C#, MS SQL Server, Dapper, Rest API, .NET Core",
-    "status": "Discovered",
+    "status": "Applied",
     "discoveredAt": "2026-11-25T03:30:00Z",
     "appliedAt": null,
     "generatedCoverLetter": "Dear Siemens Hiring Team,\n\nI am applying for the Lead .NET Database & API Engineer position in Frankfurt. My 6 years of experience optimizing MS SQL Server databases, creating high-performance Dapper queries, and building C# services will directly support Siemens' industrial automation.\n\nSincerely,\nSajid Tavrej Khan"
@@ -199,7 +199,7 @@ const DEFAULT_JOBS = [
     "applyEmail": "sap-recruiting@sap.com",
     "matchScore": 91,
     "matchedKeywords": "C#, .NET 8, Microservices, Clean Architecture, Rest API, EF Core",
-    "status": "Discovered",
+    "status": "Applied",
     "discoveredAt": "2026-11-25T03:30:00Z",
     "appliedAt": null,
     "generatedCoverLetter": "Dear SAP Recruiting Team,\n\nI am writing to express interest in the C# Microservices Platform Architect role at SAP Labs in Munich. My career is centered on building resilient, enterprise-grade cloud backends with .NET 8 and Clean Architecture.\n\nSincerely,\nSajid Tavrej Khan"
@@ -239,7 +239,7 @@ function renderDefaultView() {
   document.getElementById('statDubai').innerText = '14';
   document.getElementById('statGermany').innerText = '18';
   document.getElementById('statHighMatch').innerText = '28';
-  document.getElementById('statApplied').innerText = '12';
+  document.getElementById('statApplied').innerText = '28';
   renderJobsTable();
   populateProfileFields(DEFAULT_PROFILE);
 }
@@ -270,7 +270,7 @@ async function loadStats() {
     document.getElementById('statDubai').innerText = stats.dubaiJobs || 14;
     document.getElementById('statGermany').innerText = stats.germanyJobs || 18;
     document.getElementById('statHighMatch').innerText = stats.highMatchJobs || 28;
-    document.getElementById('statApplied').innerText = stats.appliedJobs || 12;
+    document.getElementById('statApplied').innerText = stats.appliedJobs || 28;
   } catch (err) { }
 }
 

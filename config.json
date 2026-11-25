@@ -27,7 +27,7 @@
   ],
   "DailyRunHour": 9,
   "MinMatchScoreToNotify": 60,
-  "AutoSendEmailApplication": false,
+  "AutoSendEmailApplication": true,
   "BlacklistedCompanies": [
     "red orange",
     "red orange technologies",
