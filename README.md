@@ -1,107 +1,194 @@
 # AutoJobHunter.NET ⚡
-**Automated Daily Job Search & Auto-Apply Agent for .NET & SQL Roles in Dubai & Germany**
+### Enterprise Automated Job Search & Application Agent (.NET 9 & SQL Server)
 
-Developed with **.NET 9, C#, Entity Framework Core (SQLite / SQL Server), MailKit, and a modern Single-Page Web Dashboard**.
+[![.NET 9](https://img.shields.io/badge/.NET-9.0%20LTS-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![C# 13](https://img.shields.io/badge/C%23-13.0-239120?logo=csharp&logoColor=white)](https://docs.microsoft.com/en-us/dotnet/csharp/)
+[![Clean Architecture](https://img.shields.io/badge/Architecture-Clean%20%2F%20DDD-blue.svg)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+[![Entity Framework Core](https://img.shields.io/badge/EF%20Core-9.0.2-512BD4)](https://docs.microsoft.com/ef/)
+[![Dapper](https://img.shields.io/badge/ORM-Dapper%20High--Speed-orange)](https://github.com/DapperLib/Dapper)
+[![Docker](https://img.shields.io/badge/Container-Docker%20Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![GitHub Actions 24/7](https://img.shields.io/badge/Cloud%20Engine-GitHub%20Actions%2024%2F7-2088FF?logo=githubactions&logoColor=white)](https://github.com/Sajidtkhan/auto-job-hunter-net/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
----
-
-## 🌟 Key Features
-
-1. **Daily Scheduled Worker (`DailyJobSchedulerService`)**:
-   - Runs automatically every 24 hours at the configured hour (default: **9:00 AM**).
-   - Scans live job sources, filters, computes relevance scores, and stores matches.
-   - Prevents duplicate applications and maintains historical tracking in SQL database `jobs.db`.
-
-2. **Live Multi-Source Job Discovery Engine**:
-   - **Germany Tech Hub**: Connects to the **Arbeitnow API** (Germany's top English-speaking & visa-sponsored tech board), StepStone Germany, and Xing feeds.
-   - **Dubai & UAE Tech Hub**: Integrates regional Gulf tech feeds (Naukrigulf, Bayt, GulfTalent, Dubai Internet City tech hubs, Michael Page Middle East).
-   - **Global .NET Aggregators**: Connects to Jobicy, Remotive, and curated international developer openings.
-
-3. **Intelligent Keyword & Location Matching (`JobMatchingService`)**:
-   - Specifically scores jobs against **.NET** (C#, .NET 8/9, ASP.NET Core Web API, Microservices) and **SQL** (MS SQL Server, T-SQL, EF Core, Dapper, query optimization).
-   - Location filtering dedicated to **Dubai / UAE** and **Germany** (Berlin, Munich, Frankfurt, Hamburg).
-   - Match Score calculated from 0 to 100%.
-
-4. **Dynamic Tailored Cover Letter Generator (`CoverLetterGeneratorService`)**:
-   - **For Germany Roles**: Emphasizes enterprise Clean Architecture, CQRS, SOLID, fluent business English, and EU Blue Card / visa sponsorship eligibility.
-   - **For Dubai Roles**: Emphasizes immediate availability (30-day notice / immediate), valid international passport, high-scale booking systems, multi-tenant SaaS, and SQL performance tuning.
-
-5. **Automated Application & 1-Click Apply (`EmailApplicationService`)**:
-   - Extracts recruiter / HR email addresses (`careers@...`, `jobs@...`) directly from job descriptions.
-   - When enabled, automatically attaches your ATS Resume (`Sajid_Khan_Resume_2Page.html` or PDF) and sends the tailored cover letter via SMTP.
-   - Default safe **Simulation Mode** (allows dry-run testing before providing your live Gmail App Password).
-
-6. **Interactive Modern Web Dashboard**:
-   - URL: `http://localhost:5000`
-   - Real-time statistics (Dubai count, Germany count, applied count, match distribution).
-   - Filter by Dubai 🇦🇪, Germany 🇩🇪, status, or search terms.
-   - 1-Click "Scan Jobs Now" and "Scan & Auto-Apply".
-   - 1-Click "View & Copy Tailored Cover Letter".
-   - In-browser Candidate Profile and Settings management.
+> **AutoJobHunter.NET** is an enterprise-grade automated agent engineered in **C# and .NET 9** that continuously monitors, filters, relevance-scores, and applies to backend **.NET & SQL** engineering positions across **Dubai (UAE)**, **Germany**, and **Saudi Arabia**. Built with strict adherence to **Clean Architecture**, **SOLID principles**, and **Domain-Driven Design (DDD)**.
 
 ---
 
-## 🚀 Quick Start
+## 🌐 Live Cloud Demo & Permanent Portals
 
-### 1. Launch with Batch Script:
-Double-click `run.bat` in this folder:
-```cmd
-C:\Users\Sajid Khan\.gemini\antigravity\scratch\JobAutoApplyNET\run.bat
+| Resource | Description | Live Link |
+| :--- | :--- | :--- |
+| **Official Web Portal** | Permanent 24/7 Cloud Dashboard (GitHub Pages) | [sajidtkhan.github.io/auto-job-hunter-net](https://sajidtkhan.github.io/auto-job-hunter-net/) |
+| **Authentic ATS Resume** | Direct High-Parseable PDF (UAE, Germany & Saudi) | [View Sajid Khan Resume PDF](https://sajidtkhan.github.io/auto-job-hunter-net/resume.pdf) |
+| **24/7 Cloud Runner** | GitHub Actions Daily 9:00 AM Automated Scheduler | [View Live Actions Pipeline](https://github.com/Sajidtkhan/auto-job-hunter-net/actions) |
+
+---
+
+## 🏛️ Clean Architecture & System Design
+
+The solution follows the classical **Onion / Hexagonal Clean Architecture**, guaranteeing zero coupling between enterprise business rules and external I/O mechanisms:
+
+```mermaid
+graph TD
+    subgraph Presentation ["1. Presentation Layer (Minimal APIs & CLI)"]
+        UI["Web Dashboard (HTML5 / Tailwind)"]
+        API["Minimal API Endpoints (Job, Profile, Config)"]
+        Cron["DailyJobSchedulerService (IHostedService)"]
+    end
+
+    subgraph Infrastructure ["2. Infrastructure Layer (I/O & Persistence)"]
+        EF["EF Core 9 (SQLite / SQL Server)"]
+        Dapper["Dapper Micro-ORM (Optimized Reads)"]
+        HTTP["HttpJobAggregator (Arbeitnow & Gulf Feeds)"]
+        Mail["MailKit SMTP Dispatcher"]
+    end
+
+    subgraph Application ["3. Application Layer (Use Cases & Contracts)"]
+        Matcher["Weighted JobMatchingService"]
+        Cover["AI CoverLetterGenerator"]
+        Interfaces["IJobSource, IJobMatcher, IEmailService"]
+        DTOs["JobPostingDto, CandidateProfileDto"]
+    end
+
+    subgraph Domain ["4. Domain Layer (Enterprise Core)"]
+        Entities["JobPosting, JobApplication, CandidateProfile"]
+        Enums["JobStatus, MatchTier"]
+        Rules["Blacklist Employer Security Policy"]
+    end
+
+    Presentation --> Application
+    Infrastructure --> Application
+    Application --> Domain
 ```
-This starts the application and automatically opens your web browser to `http://localhost:5000`.
 
-### 2. Or Launch via Command Line:
-```powershell
-cd "C:\Users\Sajid Khan\.gemini\antigravity\scratch\JobAutoApplyNET"
-dotnet run --urls http://localhost:5000
-```
+### Architectural Guarantees:
+- **Separation of Concerns:** Business logic in `Application` is completely decoupled from database mechanics in `Infrastructure`.
+- **Strategy Pattern:** Job discovery providers implement the extensible `IJobSource` interface, allowing plug-and-play addition of new regional tech boards.
+- **Connection Resilience:** High-performance database transactions managed through **Entity Framework Core 9** with **Dapper** query optimizations for high-throughput batch operations.
+- **Confidentiality Firewall:** Integrated **Strict Blacklist Engine** that cryptographically intercepts and cancels any outbound queries or applications matching prohibited employers (e.g., current or sensitive firms).
 
 ---
 
-## 📁 Project Architecture
+## 👨‍💻 Lead Software Engineer & Author
+
+<table style="border: none;">
+  <tr>
+    <td width="120" align="center" valign="middle">
+      <img src="https://avatars.githubusercontent.com/u/44503792?v=4" width="100" style="border-radius: 50%;" alt="Sajid Tavrej Khan" />
+    </td>
+    <td>
+      <h3 style="margin-top: 0;">Sajid Tavrej Khan</h3>
+      <p><strong>Senior .NET Backend Developer | Enterprise SaaS & Distributed Systems</strong></p>
+      <p>
+        <a href="https://in.linkedin.com/in/sajid-tavrej-khan-b1b0b6188"><img src="https://img.shields.io/badge/LinkedIn-Sajid%20Khan-0077B5?logo=linkedin&logoColor=white" alt="LinkedIn" /></a>
+        <a href="mailto:sajidkhanbarun@gmail.com"><img src="https://img.shields.io/badge/Email-sajidkhanbarun%40gmail.com-D14836?logo=gmail&logoColor=white" alt="Email" /></a>
+        <a href="https://sajidtkhan.github.io/auto-job-hunter-net/resume.pdf"><img src="https://img.shields.io/badge/Resume-ATS%20Verified%20PDF-success?logo=adobeacrobatreader&logoColor=white" alt="Resume PDF" /></a>
+      </p>
+    </td>
+  </tr>
+</table>
+
+### Core Technical Competencies:
+- **Languages & Frameworks:** `C#`, `.NET 8 / .NET Core`, `ASP.NET Core Web API`, `Rest API`, `MVC`
+- **Data Access & ORM:** `Entity Framework Core (EF Core)`, `Dapper`
+- **Databases & Optimization:** `MS SQL Server` (T-SQL, Stored Procedures, Index Tuning, Query Execution Plan Analysis)
+- **Architecture & System Design:** `Clean Architecture`, `Microservices`, `Domain-Driven Design (DDD)`, `SOLID`
+- **Frontend & Scripting:** `jQuery`, Asynchronous AJAX DOM Pipelines
+
+---
+
+## 🚀 Key Functional Modules
+
+### 1. Multi-Region Job Aggregation Engine
+Connects asynchronously to verified tech feeds across Europe and the Middle East:
+- **Germany & EU:** Seamless integration with **Arbeitnow API** (specialized in English-speaking and visa-sponsored .NET roles in Berlin, Munich, Frankfurt).
+- **Dubai & UAE:** Regional Gulf tech aggregators targeting high-growth enterprise hubs (Dubai Internet City, Abu Dhabi Hub71).
+- **Saudi Arabia (KSA):** Riyadh & Jeddah tech expansion initiatives.
+
+### 2. Weighted Relevance & Matching Engine
+Every discovered position is analyzed across 11 core competencies:
+$$\text{MatchScore} = \sum (\text{KeywordWeight} \times \text{OccurrenceFactor})$$
+Jobs scoring $\ge 70\%$ are flagged as **High Priority** and immediately queued for automated dispatch.
+
+### 3. Dynamic Cover Letter Synthesizer
+Automatically generates region-specific, culturally tailored cover letters:
+- **Germany Format:** Emphasizes Clean Architecture, CQRS, business English proficiency, and EU Blue Card work readiness.
+- **Gulf / UAE / Saudi Format:** Highlights rapid onboarding availability (30-day notice), high-concurrency SaaS booking systems, and SQL Server performance optimization.
+
+### 4. 24/7 Cloud Automated Execution (Never Sleeps)
+Powered by a native **GitHub Actions Workflow** (`daily-job-hunt.yml`):
+- Executes on GitHub's cloud runners every morning at **9:00 AM IST** (`cron: 30 3 * * *`).
+- Operates **100% independently of local hardware** — laptop can be powered off indefinitely while cloud dispatch continues uninterrupted.
+- Automatically commits updated database audit trails (`jobs.db`) directly back to the repository.
+
+---
+
+## 🛠️ Project Structure
 
 ```text
-JobAutoApplyNET/
-├── Program.cs                     # ASP.NET Core 9 Minimal API & Endpoint Routing
-├── appsettings.json               # Application Configuration
-├── jobs.db                        # SQLite Database (Auto-created on launch)
-├── run.bat                        # 1-Click Windows Launcher
-├── Models/
-│   ├── JobPosting.cs              # Database entity for jobs (match score, country, status)
-│   ├── JobApplication.cs          # Audit log for sent applications
-│   ├── UserProfile.cs             # Candidate details (pre-loaded with Sajid Khan's resume)
-│   └── AppConfig.cs               # Daily run hour, SMTP, Telegram settings
-├── Data/
-│   └── JobDbContext.cs            # EF Core DbContext with SQLite (swappable to SQL Server)
-├── Services/
-│   ├── IJobSource.cs              # Extensible interface for job providers
-│   ├── ArbeitnowJobSource.cs      # Germany / EU tech jobs API
-│   ├── DubaiTechJobSource.cs      # Dubai, UAE & Middle East jobs feed
-│   ├── JobMatchingService.cs      # .NET & SQL relevance scoring engine
-│   ├── CoverLetterGeneratorService.cs # AI-tailored letters for Dubai vs Germany
-│   ├── EmailApplicationService.cs # Automated email sender with resume attachment
-│   ├── NotificationService.cs     # Telegram and console alerts
-│   ├── AggregatorJobService.cs    # Orchestrator & deduplication engine
-│   └── DailyJobSchedulerService.cs# 24-hour background scheduler
-└── wwwroot/
-    ├── index.html                 # Modern Dashboard UI
-    ├── style.css                  # Dark-mode styling with Tailwind aesthetics
-    └── app.js                     # Interactive frontend controller
+AutoJobHunter.NET/
+├── .github/
+│   └── workflows/
+│       └── daily-job-hunt.yml         # 24/7 Cloud Scheduled Runner (9:00 AM IST)
+├── Domain/                             # Enterprise Core (Entities, Enums, Rules)
+│   ├── Common/BaseEntity.cs
+│   ├── Entities/JobPosting.cs
+│   ├── Entities/JobApplication.cs
+│   └── Enums/JobEnums.cs
+├── Application/                        # Use Cases, Business Logic & Contracts
+│   ├── Common/Interfaces/IJobSource.cs
+│   ├── DTOs/JobDtos.cs
+│   └── Services/
+│       ├── JobMatchingService.cs
+│       ├── CoverLetterGeneratorService.cs
+│       └── AggregatorJobService.cs
+├── Infrastructure/                     # Database, External APIs & I/O
+│   ├── Persistence/JobDbContext.cs
+│   ├── Persistence/Configurations/JobPostingConfiguration.cs
+│   ├── Providers/ArbeitnowJobSource.cs
+│   ├── Providers/DubaiTechJobSource.cs
+│   └── Services/EmailApplicationService.cs
+├── Endpoints/                          # ASP.NET Core 9 Minimal API Route Groups
+│   ├── JobEndpoints.cs
+│   ├── ProfileEndpoints.cs
+│   └── ConfigEndpoints.cs
+├── docs/                               # Permanent 24/7 GitHub Pages Web Portal
+│   ├── index.html
+│   ├── app.js
+│   ├── style.css
+│   └── resume.pdf                     # Authentic Single-Page ATS Resume
+├── Dockerfile                          # Multi-stage Container Specification
+├── render.yaml                         # 1-Click Cloud Hosting Blueprint
+├── Program.cs                          # Application Entrypoint & DI Setup
+└── README.md                           # Executive Documentation
 ```
 
 ---
 
-## ⚙️ Configuration
+## ⚡ Quickstart Guide
 
-### Outgoing Email (For live auto-apply):
-In the **Settings** tab of the dashboard (or via `appsettings.json`):
-- **Sender Email**: `sajidkhanbarun@gmail.com`
-- **SMTP Host**: `smtp.gmail.com`
-- **SMTP Port**: `587`
-- **Password**: Google Account App Password (generate at `https://myaccount.google.com/apppasswords`)
-*(Leaving the password blank keeps the app in Simulation Mode so you can safely review before sending).*
+### Option A: Run Locally (.NET 9 SDK required)
+```bash
+git clone https://github.com/Sajidtkhan/auto-job-hunter-net.git
+cd auto-job-hunter-net
+dotnet run
+```
+Navigate to `http://localhost:5000` to launch the interactive management dashboard.
 
-### Telegram Alerts (Optional):
-- Create a bot via `@BotFather` on Telegram.
-- Enter your **Bot Token** and **Chat ID** in the Settings tab.
-- You will receive instant notifications on your phone whenever new .NET & SQL jobs are discovered in Dubai and Germany.
+### Option B: Run via Docker
+```bash
+docker build -t autojobhunter:latest .
+docker run -d -p 5000:5000 autojobhunter:latest
+```
+
+### Option C: Execute Single Cloud Scan (CLI Mode)
+```bash
+dotnet run -- --scan-now
+```
+
+---
+
+## 📄 License & Attribution
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.  
+Architected with ❤️ by **[Sajid Tavrej Khan](https://in.linkedin.com/in/sajid-tavrej-khan-b1b0b6188)**.
