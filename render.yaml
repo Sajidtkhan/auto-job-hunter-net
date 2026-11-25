@@ -6,4 +6,6 @@ services:
     region: frankfurt
     envVars:
       - key: PORT
-        value: 10000
+        value: 5000
+      - key: SMTP_PASSWORD
+        sync: false
