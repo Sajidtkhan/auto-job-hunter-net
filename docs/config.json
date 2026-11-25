@@ -1,0 +1,43 @@
+{
+  "DailyRunHour": 9,
+  "MinMatchScoreToNotify": 60,
+  "AutoSendEmailApplication": true,
+  "BlacklistedCompanies": [
+    "Red Orange Technologies",
+    "Arethos Ventures",
+    "RevClerx",
+    "MaxVal",
+    "Mindmatrix"
+  ],
+  "TargetKeywords": [
+    "C#",
+    ".NET 8",
+    ".NET Core",
+    "ASP.NET Core Web API",
+    "Entity Framework Core",
+    "Dapper",
+    "MS SQL Server",
+    "Clean Architecture",
+    "Microservices",
+    "Rest API",
+    "jQuery",
+    "MVC"
+  ],
+  "TargetCountries": [
+    "Germany",
+    "Dubai",
+    "United Arab Emirates",
+    "UAE",
+    "Saudi Arabia"
+  ],
+  "Smtp": {
+    "Host": "smtp.gmail.com",
+    "Port": 587,
+    "SenderEmail": "sajidkhanbarun@gmail.com"
+  },
+  "Telegram": {
+    "Enabled": false,
+    "BotToken": "",
+    "ChatId": ""
+  }
+}
